@@ -2,11 +2,11 @@
 
 [www.companieskeeprejecting.me](www.companieskeeprejecting.me)
 
-(at the moment the actual website crashes, probably due to the size of the GET call, you'll have to run it locally with `python flash_app.py`)
+(at the moment the actual website crashes, probably due to the size of the GET call, haven't tried it with a smaller dataset yet, but you can run it locally with `python flash_app.py` with no issues)
 
 A facetious proof-of-concept application that tries to help job seekers with rejected offers figure out what went wrong and what areas they can improve on.
 
-Lists most common skills that other applicants to this position have, sorted both by quantity alone and weighted according to the skill levels of the applicants with these skills.
+Lists most common skills that other applicants (accepted, and rejected, and all-inclusive) to this position have, sorted both by quantity alone and weighted according to the skill levels of the applicants with these skills.
 
 This was my first experience using Flask and manipulating with JSON files using Python, as such I was not able to implement most of what I had invisioned the app to eb capable of.
 

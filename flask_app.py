@@ -8,8 +8,8 @@ from flask import Flask, render_template, request
 
 HEADERS = {'Authorization': 'Bearer a1c83e791bef890e41b476c6cba31669a09f71fa94d5d3b9d6845a6c1bf12721f4ac9d2d3c687043637451d35cafdf08643062acf3c4af5c6cbe8128836370ea','Content-Type':'application/json'}
 BASE_URL = 'https://hackicims.com/api/v1/companies/'
-WEIGHT_EXPERT = 3
-WEIGHT_ADVANCED = 2
+WEIGHT_EXPERT = 5
+WEIGHT_ADVANCED = 3
 WEIGHT_BEGINNER = 1
 MAX_LIST_LENGTH = 10
 
@@ -40,18 +40,22 @@ def home():
     company_id = request.values.get('company_id')
     person_id = request.values.get('person_id')
     job_name = request.values.get('job_name')
-    if company_id == 'None' or company_id == '' or person_id == 'None' or person_id == '':
+    if company_id not in company_ids or person_id not in data[company_id]['people']['id'].values():
         body = '''Please enter a company ID and personal ID'''
         return render_template('home.html', company_id=company_id, person_id=person_id, job_name=job_name, body=body)
     if request.method == 'POST':
-        body = '''
-
-        '''
+        body = ''
+        if company_id in company_ids and person_id in data[company_id]['people']['id'].values():
+            for person in data[company_id]['people']:
+                if person['id'] == person_id:
+                    body = json.dumps(person, indent=2)
         return render_template('home.html', company_id=company_id, person_id=person_id, job_name=job_name, body=body)
     else:
-        body = '''
-
-        '''
+        body = ''
+        if company_id in company_ids and person_id in data[company_id]['people']['id'].values():
+            for person in data[company_id]['people']:
+                if person['id'] == person_id:
+                    body = json.dumps(person, indent=2)
         return render_template('home.html', company_id=company_id, person_id=person_id, job_name=job_name, body=body)
 
 
@@ -100,11 +104,11 @@ def job():
                 # for each application with a jobId in our set
                     comp_applicants_all.add((comp_id, application['personId']))
                     # add personId to set of all applicants
-                    if application['jobId'] == 'OFFER_ACCEPTED' or application['jobId'] == 'OFFER_REJECTED':
-                    # if status is OFFER_ACCEPTED or OFFER_REJECTED
+                    if application['status'] == 'OFFER_ACCEPTED' or application['status'] == 'OFFER_REJECTED':
+                    # # if status is OFFER_ACCEPTED or OFFER_REJECTED
                         comp_applicants_accepted.add((comp_id, application['personId']))
                         # add personId to set of accepted applicants
-                    elif application['jobId'] == 'REJECTED':
+                    elif application['status'] == 'REJECTED':
                     # else if status is REJECTED
                         comp_applicants_rejected.add((comp_id, application['personId']))
                         # add personId to set of rejected applicants
@@ -137,52 +141,52 @@ def job():
                                 all_job_skills_weighted[skill['name']] = WEIGHT_ADVANCED
                             elif skill['level'] == 'Beginner':
                                 all_job_skills_weighted[skill['name']] = WEIGHT_BEGINNER
-        # for comp_applicant in comp_applicants_accepted:
-        #     for person in data[comp_applicant_accepted[0]]['people']:
-        #         if person['id'] == comp_applicant_accepted[1]:
-        #             for skill in person['skills']:
-        #                 try:
-        #                     acc_job_skills[skill['name']] += 1
-        #                     if skill['level'] == 'Expert':
-        #                         acc_job_skills_weighted[skill['name']] += WEIGHT_EXPERT
-        #                     elif skill['level'] == 'Advanced':
-        #                         acc_job_skills_weighted[skill['name']] += WEIGHT_ADVANCED
-        #                     elif skill['level'] == 'Beginner':
-        #                         acc_job_skills_weighted[skill['name']] += WEIGHT_BEGINNER
-        #                 except KeyError:
-        #                     acc_job_skills[skill['name']] = 1
-        #                     if skill['level'] == 'Expert':
-        #                         acc_job_skills_weighted[skill['name']] = WEIGHT_EXPERT
-        #                     elif skill['level'] == 'Advanced':
-        #                         acc_job_skills_weighted[skill['name']] = WEIGHT_ADVANCED
-        #                     elif skill['level'] == 'Beginner':
-        #                         acc_job_skills_weighted[skill['name']] = WEIGHT_BEGINNER
-        # for comp_applicant in comp_applicants_rejected:
-        #     for person in data[comp_applicant_rejected[0]]['people']:
-        #         if person['id'] == comp_applicant_rejected[1]:
-        #             for skill in person['skills']:
-        #                 try:
-        #                     rej_job_skills[skill['name']] += 1
-        #                     if skill['level'] == 'Expert':
-        #                         rej_job_skills_weighted[skill['name']] += WEIGHT_EXPERT
-        #                     elif skill['level'] == 'Advanced':
-        #                         rej_job_skills_weighted[skill['name']] += WEIGHT_ADVANCED
-        #                     elif skill['level'] == 'Beginner':
-        #                         rej_job_skills_weighted[skill['name']] += WEIGHT_BEGINNER
-        #                 except KeyError:
-        #                     rej_job_skills[skill['name']] = 1
-        #                     if skill['level'] == 'Expert':
-        #                         rej_job_skills_weighted[skill['name']] = WEIGHT_EXPERT
-        #                     elif skill['level'] == 'Advanced':
-        #                         rej_job_skills_weighted[skill['name']] = WEIGHT_ADVANCED
-        #                     elif skill['level'] == 'Beginner':
-        #                         rej_job_skills_weighted[skill['name']] = WEIGHT_BEGINNER
+        for comp_applicant in comp_applicants_accepted:
+            for person in data[comp_applicant[0]]['people']:
+                if person['id'] == comp_applicant[1]:
+                    for skill in person['skills']:
+                        try:
+                            acc_job_skills[skill['name']] += 1
+                            if skill['level'] == 'Expert':
+                                acc_job_skills_weighted[skill['name']] += WEIGHT_EXPERT
+                            elif skill['level'] == 'Advanced':
+                                acc_job_skills_weighted[skill['name']] += WEIGHT_ADVANCED
+                            elif skill['level'] == 'Beginner':
+                                acc_job_skills_weighted[skill['name']] += WEIGHT_BEGINNER
+                        except KeyError:
+                            acc_job_skills[skill['name']] = 1
+                            if skill['level'] == 'Expert':
+                                acc_job_skills_weighted[skill['name']] = WEIGHT_EXPERT
+                            elif skill['level'] == 'Advanced':
+                                acc_job_skills_weighted[skill['name']] = WEIGHT_ADVANCED
+                            elif skill['level'] == 'Beginner':
+                                acc_job_skills_weighted[skill['name']] = WEIGHT_BEGINNER
+        for comp_applicant in comp_applicants_rejected:
+            for person in data[comp_applicant[0]]['people']:
+                if person['id'] == comp_applicant[1]:
+                    for skill in person['skills']:
+                        try:
+                            rej_job_skills[skill['name']] += 1
+                            if skill['level'] == 'Expert':
+                                rej_job_skills_weighted[skill['name']] += WEIGHT_EXPERT
+                            elif skill['level'] == 'Advanced':
+                                rej_job_skills_weighted[skill['name']] += WEIGHT_ADVANCED
+                            elif skill['level'] == 'Beginner':
+                                rej_job_skills_weighted[skill['name']] += WEIGHT_BEGINNER
+                        except KeyError:
+                            rej_job_skills[skill['name']] = 1
+                            if skill['level'] == 'Expert':
+                                rej_job_skills_weighted[skill['name']] = WEIGHT_EXPERT
+                            elif skill['level'] == 'Advanced':
+                                rej_job_skills_weighted[skill['name']] = WEIGHT_ADVANCED
+                            elif skill['level'] == 'Beginner':
+                                rej_job_skills_weighted[skill['name']] = WEIGHT_BEGINNER
         all_skills_sorted = sorted(all_job_skills.items(), key=lambda skill: skill[1], reverse=True)
         all_skills_weighted_sorted = sorted(all_job_skills_weighted.items(), key=lambda skill: skill[1], reverse=True)
-        # acc_skills_sorted = sorted(acc_job_skills.items(), key=lambda skill: skill[1], reverse=True)
-        # acc_skills_weighted_sorted = sorted(acc_job_skills_weighted.items(), key=lambda skill: skill[1], reverse=True)
-        # rej_skills_sorted = sorted(rej_job_skills.items(), key=lambda skill: skill[1], reverse=True)
-        # rej_skills_weighted_sorted = sorted(rej_job_skills_weighted.items(), key=lambda skill: skill[1], reverse=True)
+        acc_skills_sorted = sorted(acc_job_skills.items(), key=lambda skill: skill[1], reverse=True)
+        acc_skills_weighted_sorted = sorted(acc_job_skills_weighted.items(), key=lambda skill: skill[1], reverse=True)
+        rej_skills_sorted = sorted(rej_job_skills.items(), key=lambda skill: skill[1], reverse=True)
+        rej_skills_weighted_sorted = sorted(rej_job_skills_weighted.items(), key=lambda skill: skill[1], reverse=True)
         body = ''.join([body, 'Most common skills for this job among ALL applicants: '])
         list_len = min(len(all_skills_sorted), MAX_LIST_LENGTH)
         for i in range(0, list_len):
@@ -192,26 +196,26 @@ def job():
         list_len = min(len(all_skills_weighted_sorted), MAX_LIST_LENGTH)
         for i in range(0, list_len):
             body = ' ~ '.join([body, all_skills_weighted_sorted[i][0]])
-        body = ''.join([body, '\n\n']);
-        # body = ''.join([body, 'Most common skills for this job among ACCEPTED applicants:'])
-        # list_len = min(len(acc_skills_sorted), MAX_LIST_LENGTH)
-        # for i in range(0, list_len):
-        #     body = '\n- '.join([body, acc_skills_sorted[i][0]])
-        # body = ''.join([body, '\n\n']);
-        # body = ''.join([body, 'Most common skills for this job among ACCEPTED applicants: (weighted by skill level)'])
-        # list_len = min(len(acc_skills_weighted_sorted), MAX_LIST_LENGTH)
-        # for i in range(0, list_len):
-        #     body = '\n- '.join([body, acc_skills_weighted_sorted[i][0]])
-        # body = ''.join([body, '\n\n']);
-        # body = ''.join([body, 'Most common skills for this job among REJECTED applicants:'])
-        # list_len = min(len(rej_skills_sorted), MAX_LIST_LENGTH)
-        # for i in range(0, list_len):
-        #     body = '\n- '.join([body, rej_skills_sorted[i][0]])
-        # body = ''.join([body, '\n\n']);
-        # body = ''.join([body, 'Most common skills for this job among REJECTED applicants: (weighted by skill level)'])
-        # list_len = min(len(rej_skills_weighted_sorted), MAX_LIST_LENGTH)
-        # for i in range(0, list_len):
-        #     body = '\n- '.join([body, rej_skills_weighted_sorted[i][0]])
+        body = ''.join([body, ' | | | ']);
+        body = ''.join([body, 'Most common skills for this job among ACCEPTED applicants:'])
+        list_len = min(len(acc_skills_sorted), MAX_LIST_LENGTH)
+        for i in range(0, list_len):
+            body = ' ~ '.join([body, acc_skills_sorted[i][0]])
+        body = ''.join([body, ' | | | ']);
+        body = ''.join([body, 'Most common skills for this job among ACCEPTED applicants: (weighted by skill level)'])
+        list_len = min(len(acc_skills_weighted_sorted), MAX_LIST_LENGTH)
+        for i in range(0, list_len):
+            body = ' ~ '.join([body, acc_skills_weighted_sorted[i][0]])
+        body = ''.join([body, ' | | | ']);
+        body = ''.join([body, 'Most common skills for this job among REJECTED applicants:'])
+        list_len = min(len(rej_skills_sorted), MAX_LIST_LENGTH)
+        for i in range(0, list_len):
+            body = '\n- '.join([body, rej_skills_sorted[i][0]])
+        body = ''.join([body, ' | | | ']);
+        body = ''.join([body, 'Most common skills for this job among REJECTED applicants: (weighted by skill level)'])
+        list_len = min(len(rej_skills_weighted_sorted), MAX_LIST_LENGTH)
+        for i in range(0, list_len):
+            body = '\n- '.join([body, rej_skills_weighted_sorted[i][0]])
         # body = ''.join([body, '\n\n']);
         return render_template('job.html', company_id=company_id, person_id=person_id, job_name=job_name, body=body)
     else:
