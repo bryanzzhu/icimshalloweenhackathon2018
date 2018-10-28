@@ -88,6 +88,9 @@ def job():
         body = '''Please enter a company ID, personal ID, and job name'''
         return render_template('job.html', company_id=company_id, person_id=person_id, job_name=job_name, body=body)
     if request.method == 'POST':
+        company_id = request.form.get('company_id')
+        person_id = request.form.get('person_id')
+        job_name = request.form.get('job_name')
         comp_applicants_all = set()
         comp_applicants_accepted = set()
         comp_applicants_rejected = set()
@@ -187,32 +190,32 @@ def job():
         acc_skills_weighted_sorted = sorted(acc_job_skills_weighted.items(), key=lambda skill: skill[1], reverse=True)
         rej_skills_sorted = sorted(rej_job_skills.items(), key=lambda skill: skill[1], reverse=True)
         rej_skills_weighted_sorted = sorted(rej_job_skills_weighted.items(), key=lambda skill: skill[1], reverse=True)
-        body = ''.join([body, 'Most common skills for this job among ALL applicants: '])
+        body = ''.join([body, 'MOST COMMON SKILLS FOR THIS JOB AMONG ALL APPLICANTS: '])
         list_len = min(len(all_skills_sorted), MAX_LIST_LENGTH)
         for i in range(0, list_len):
             body = ' ~ '.join([body, all_skills_sorted[i][0]])
         body = ''.join([body, ' | | | ']);
-        body = ''.join([body, 'Most common skills for this job among ALL applicants: (weighted by skill level) '])
+        body = ''.join([body, 'MOST COMMON SKILLS FOR THIS JOB AMONG ALL APPLICANTS: (WEIGHTED BY SKILL LEVEL) '])
         list_len = min(len(all_skills_weighted_sorted), MAX_LIST_LENGTH)
         for i in range(0, list_len):
             body = ' ~ '.join([body, all_skills_weighted_sorted[i][0]])
         body = ''.join([body, ' | | | ']);
-        body = ''.join([body, 'Most common skills for this job among ACCEPTED applicants:'])
+        body = ''.join([body, 'MOST COMMON SKILLS FOR THIS JOB AMONG ACCEPTED APPLICANTS:'])
         list_len = min(len(acc_skills_sorted), MAX_LIST_LENGTH)
         for i in range(0, list_len):
             body = ' ~ '.join([body, acc_skills_sorted[i][0]])
         body = ''.join([body, ' | | | ']);
-        body = ''.join([body, 'Most common skills for this job among ACCEPTED applicants: (weighted by skill level)'])
+        body = ''.join([body, 'MOST COMMON SKILLS FOR THIS JOB AMONG ACCEPTED APPLICANTS: (WEIGHTED BY SKILL LEVEL)'])
         list_len = min(len(acc_skills_weighted_sorted), MAX_LIST_LENGTH)
         for i in range(0, list_len):
             body = ' ~ '.join([body, acc_skills_weighted_sorted[i][0]])
         body = ''.join([body, ' | | | ']);
-        body = ''.join([body, 'Most common skills for this job among REJECTED applicants:'])
+        body = ''.join([body, 'MOST COMMON SKILLS FOR THIS JOB AMONG REJECTED APPLICANTS:'])
         list_len = min(len(rej_skills_sorted), MAX_LIST_LENGTH)
         for i in range(0, list_len):
             body = '\n- '.join([body, rej_skills_sorted[i][0]])
         body = ''.join([body, ' | | | ']);
-        body = ''.join([body, 'Most common skills for this job among REJECTED applicants: (weighted by skill level)'])
+        body = ''.join([body, 'MOST COMMON SKILLS FOR THIS JOB AMONG REJECTED APPLICANTS: (WEIGHTED BY SKILL LEVEL)'])
         list_len = min(len(rej_skills_weighted_sorted), MAX_LIST_LENGTH)
         for i in range(0, list_len):
             body = '\n- '.join([body, rej_skills_weighted_sorted[i][0]])
