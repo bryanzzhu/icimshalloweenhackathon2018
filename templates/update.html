@@ -1,0 +1,21 @@
+{% extends "default.html" %}
+{% block content %}
+<div class="nav-bar">
+    <div class="container">
+        <ul class="nav">
+            <li><a href="{{ url_for('home', company_id=company_id, person_id=person_id, job_name=job_name) }}">Home</a></li>
+            <li><a href="{{ url_for('update', company_id=company_id, person_id=person_id, job_name=job_name) }}">Update Status</a></li>
+            <li><a href="{{ url_for('job', company_id=company_id, person_id=person_id, job_name=job_name) }}">Job Information</a></li>
+            <li><a href="{{ url_for('skill', company_id=company_id, person_id=person_id, job_name=job_name) }}">Skill Progression</a></li>
+        </ul>
+    </div>
+</div>
+<div class="content">
+    <div class="container">
+        <div class="main">
+		<h2>Update Application Status and Personal Skills</h2>
+		{{ body }}
+        </div>
+    </div>
+</div>
+{% endblock %}

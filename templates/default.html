@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>CompaniesKeepRejectingMe!</title>
+        <meta name="Description" lang="en" content="A facetious proof-of-concept application that tries to help job seekers with rejected offers figure out what went wrong and what areas they can improve on." />
+        <meta name="author" content="bzz3" />
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/styles.css') }}">
+    </head>
+    <body>
+        <a name="top"></a>
+        <div class="header">
+            <div class="container">
+                <h1 class="header-heading">CompaniesKeepRejectingMe!</h1>
+                <h4>{% if company_id %}Current Company ID: {{ company_id }}{% endif %} | {% if person_id %}Current Person ID: {{ person_id }}{% endif %} | {% if job_name %}Job of Interest: {{ job_name }}{% endif %}</h4>
+                <form method="POST">
+                    Company ID: <input type="text" name="company_id"><br>
+                    Person ID: <input type="text" name="person_id"><br>
+                    Job of Interest: <input type="text" name="job_name"><br>
+                    <input type="submit" value="Submit"><br>
+                </form>
+            </div>
+        </div>
+        {% block content %}
+        {% endblock %}
+        <div class="footer">
+            <div class="container">
+                <a href="#top">↿ Back to top ↾</a>
+            </div>
+        </div>
+    </body>
+</html>
