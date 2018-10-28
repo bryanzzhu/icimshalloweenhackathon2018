@@ -1,4 +1,4 @@
-# The "Companies Keep Rejecting Me" Support Group! (iCIMS Halloween Hackathon 2018)
+# The "Companies Keep Rejecting Me" Support Site! (iCIMS Halloween Hackathon 2018)
 
 [www.companieskeeprejecting.me](www.companieskeeprejecting.me)
 
