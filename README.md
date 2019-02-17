@@ -2,7 +2,9 @@
 
 ### Winner of the "Best use of iCIMS Hackathon API" category!
 
-[http://www.companieskeeprejecting.me](http://www.companieskeeprejecting.me)
+[Devpost](https://devpost.com/software/the-companies-keep-rejecting-me-support-group)
+
+[http://www.companieskeeprejecting.me](http://www.companieskeeprejecting.me) (URL redirects to PythonAnywhere, website used to be hosted there, no longer is, kept for posterity)
 
 (at the moment the actual website crashes, probably due to the size of the GET call, haven't tried it with a smaller dataset yet, but you can run it locally with `python flash_app.py` with no issues)
 
